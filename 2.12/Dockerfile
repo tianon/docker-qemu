@@ -2,14 +2,20 @@ FROM debian:stretch-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ovmf \
-#		qemu-system \
-#		qemu-utils \
 	&& rm -rf /var/lib/apt/lists/*
 
 COPY *.patch /qemu-patches/
 
+# https://wiki.qemu.org/SecurityProcess
+ENV QEMU_KEYS \
+# Michael Roth
+		CEACC9E15534EBABB82D3FA03353C9CEF108B584
+# https://wiki.qemu.org/Planning/ReleaseProcess#Sign_the_resulting_tarball_with_GPG: (they get signed by whoever is making the release)
+
 # https://www.qemu.org/download/#source
+# https://download.qemu.org/?C=M;O=D
 ENV QEMU_VERSION 2.12.1
+ENV QEMU_URL https://download.qemu.org/qemu-2.12.1.tar.xz
 
 RUN set -eux; \
 	\
@@ -18,6 +24,7 @@ RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		ca-certificates \
+		gnupg dirmngr \
 		wget \
 		xz-utils \
 		\
@@ -52,11 +59,21 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
-	wget -O qemu.tar.xz "https://download.qemu.org/qemu-${QEMU_VERSION}.tar.xz"; \
-# TODO verify signature
+	tarball="$(basename "$QEMU_URL")"; \
+	wget -O "$tarball.sig" "$QEMU_URL.sig"; \
+	wget -O "$tarball" "$QEMU_URL" --progress=dot:giga; \
+	\
+	export GNUPGHOME="$(mktemp -d)"; \
+	for key in $QEMU_KEYS; do \
+		gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	done; \
+	gpg --batch --verify "$tarball.sig" "$tarball"; \
+	gpgconf --kill all; \
+	rm -rf "$GNUPGHOME"; \
+	\
 	mkdir /usr/src/qemu; \
-	tar -xf qemu.tar.xz -C /usr/src/qemu --strip-components=1; \
-	rm qemu.tar.xz; \
+	tar -xf "$tarball" -C /usr/src/qemu --strip-components=1; \
+	rm "$tarball" "$tarball.sig"; \
 	\
 	cd /usr/src/qemu; \
 	\
@@ -131,7 +148,10 @@ RUN set -eux; \
 		| sort -u \
 		| xargs -r apt-mark manual \
 	; \
-	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	\
+# basic smoke test
+	qemu-img --version
 
 STOPSIGNAL SIGHUP
 
