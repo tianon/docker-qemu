@@ -14,8 +14,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 2.12.1
-ENV QEMU_URL https://download.qemu.org/qemu-2.12.1.tar.xz
+ENV QEMU_VERSION 4.1.0-rc2
+ENV QEMU_URL https://download.qemu.org/qemu-4.1.0-rc2.tar.xz
 
 RUN set -eux; \
 	\
