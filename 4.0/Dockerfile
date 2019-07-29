@@ -30,6 +30,7 @@ RUN set -eux; \
 		\
 		patch \
 		\
+		bzip2 \
 		gcc \
 		gnutls-dev \
 		libaio-dev \
