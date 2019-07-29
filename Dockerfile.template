@@ -47,7 +47,7 @@ RUN set -eux; \
 		libpixman-1-dev \
 		libpng-dev \
 		libseccomp-dev \
-		libssh2-1-dev \
+		libssh-dev \
 		libusb-1.0-0-dev \
 		libusbredirparser-dev \
 		libxen-dev \
@@ -110,7 +110,7 @@ RUN set -eux; \
 		--enable-kvm \
 		--enable-libiscsi \
 		--enable-libnfs \
-		--enable-libssh2 \
+		--enable-libssh \
 		--enable-libusb \
 		--enable-linux-aio \
 		--enable-linux-user \

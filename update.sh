@@ -35,4 +35,14 @@ for version in "${versions[@]}"; do
 		-e 's!%%QEMU_URL%%!'"$url"'!g' \
 		Dockerfile.template > "$version/Dockerfile"
 	cp -a start-qemu *.patch "$version/"
+
+	case "$rcVersion" in
+		# https://github.com/qemu/qemu/commit/b10d49d7619e4957b4b971f816661b57e5061d71
+		3.0 | 3.1 | 4.0)
+			sed -ri \
+				-e 's/libssh-dev/libssh2-1-dev/g' \
+				-e 's/--enable-libssh/--enable-libssh2/g' \
+				"$version/Dockerfile"
+			;;
+	esac
 done
