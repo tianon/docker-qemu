@@ -60,6 +60,12 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
+# patch kernel headers ala https://github.com/torvalds/linux/commit/467d12f5c7842896d2de3ced74e4147ee29e97c8
+# filed in debian at https://bugs.debian.org/960271
+	wget -O bits-per-long.patch 'https://github.com/torvalds/linux/commit/467d12f5c7842896d2de3ced74e4147ee29e97c8.patch'; \
+	patch --input="$PWD/bits-per-long.patch" --strip=4 --directory=/usr/include/linux; \
+	rm bits-per-long.patch; \
+	\
 	tarball="$(basename "$QEMU_URL")"; \
 	wget -O "$tarball.sig" "$QEMU_URL.sig"; \
 	wget -O "$tarball" "$QEMU_URL" --progress=dot:giga; \
