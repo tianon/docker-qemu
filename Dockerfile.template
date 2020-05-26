@@ -107,6 +107,7 @@ RUN set -eux; \
 		--disable-docs \
 		--disable-gtk --disable-vte \
 		--disable-sdl \
+		--disable-numa \
 		--enable-attr \
 		--enable-bzip2 \
 		--enable-cap-ng \
@@ -122,7 +123,6 @@ RUN set -eux; \
 		--enable-linux-aio \
 		--enable-linux-user \
 		--enable-modules \
-		--enable-numa \
 		--enable-seccomp \
 		--enable-system \
 		--enable-tools \
