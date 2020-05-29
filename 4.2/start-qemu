@@ -12,6 +12,7 @@ set -e
 #   QEMU_NET_USER_EXTRA="net=192.168.76.0/24,dhcpstart=192.168.76.9" (extra raw args for "-net user,...")
 #   QEMU_NO_SSH=1 (suppress automatic port 22 forwarding)
 #   QEMU_NO_SERIAL=1 (suppress automatic "-serial stdio")
+#   QEMU_NO_VNC=1 (suppress automatic "-vnc ':0'")
 
 hostArch="$(uname -m)"
 qemuArch="${QEMU_ARCH:-$hostArch}"
@@ -87,13 +88,20 @@ esac
 qemuArgs+=(
 	-netdev "$netArg,id=net"
 	-device "$qemuNetDevice,netdev=net"
-	-vnc ':0'
 )
+
 if [ -z "${QEMU_NO_SERIAL:-}" ]; then
 	qemuArgs+=(
 		-serial stdio
 	)
 fi
+
+if [ -z "${QEMU_NO_VNC:-}" ]; then
+	qemuArgs+=(
+		-vnc ':0'
+	)
+fi
+
 qemuArgs+=( "$@" )
 
 set -x
