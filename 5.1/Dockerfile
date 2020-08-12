@@ -14,8 +14,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 4.0.1
-ENV QEMU_URL https://download.qemu.org/qemu-4.0.1.tar.xz
+ENV QEMU_VERSION 5.1.0
+ENV QEMU_URL https://download.qemu.org/qemu-5.1.0.tar.xz
 
 RUN set -eux; \
 	\
@@ -48,7 +48,7 @@ RUN set -eux; \
 		libpixman-1-dev \
 		libpng-dev \
 		libseccomp-dev \
-		libssh2-1-dev \
+		libssh-dev \
 		libusb-1.0-0-dev \
 		libusbredirparser-dev \
 		libxen-dev \
@@ -111,7 +111,7 @@ RUN set -eux; \
 		--enable-kvm \
 		--enable-libiscsi \
 		--enable-libnfs \
-		--enable-libssh2 \
+		--enable-libssh \
 		--enable-libusb \
 		--enable-linux-aio \
 		--enable-linux-user \
