@@ -1,0 +1,18 @@
+{
+  "4.1": {
+    "url": "https://download.qemu.org/qemu-4.1.1.tar.xz",
+    "version": "4.1.1"
+  },
+  "4.2": {
+    "url": "https://download.qemu.org/qemu-4.2.1.tar.xz",
+    "version": "4.2.1"
+  },
+  "5.0": {
+    "url": "https://download.qemu.org/qemu-5.0.0.tar.xz",
+    "version": "5.0.0"
+  },
+  "5.1": {
+    "url": "https://download.qemu.org/qemu-5.1.0.tar.xz",
+    "version": "5.1.0"
+  }
+}

@@ -10,8 +10,10 @@ declare -A aliases=(
 self="$(basename "$BASH_SOURCE")"
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
-versions=( */ )
-versions=( "${versions[@]%/}" )
+if [ "$#" -eq 0 ]; then
+	versions="$(jq -r 'keys | map(@sh) | join(" ")' versions.json)"
+	eval "set -- $versions"
+fi
 
 # sort version numbers with highest first
 IFS=$'\n'; versions=( $(echo "${versions[*]}" | sort -rV) ); unset IFS
@@ -52,10 +54,8 @@ join() {
 	echo "${out#$sep}"
 }
 
-for version in "${versions[@]}"; do
-	commit="$(dirCommit "$version")"
-
-	fullVersion="$(git show "$commit":"$version/Dockerfile" | awk '$1 == "ENV" && $2 == "QEMU_VERSION" { print $3; exit }')"
+for version; do
+	fullVersion="$(jq -r --arg version "$version" '.[$version].version' versions.json)"
 
 	rcVersion="${version%-rc}"
 
@@ -68,6 +68,8 @@ for version in "${versions[@]}"; do
 		$version
 		${aliases[$version]:-}
 	)
+
+	commit="$(dirCommit "$version")"
 
 	echo
 	cat <<-EOE
