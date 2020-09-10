@@ -53,6 +53,7 @@ RUN set -eux; \
 		libnuma-dev \
 		libpixman-1-dev \
 		libpng-dev \
+		librbd-dev \
 		libseccomp-dev \
 		libssh-dev \
 		libusb-1.0-0-dev \
@@ -136,7 +137,8 @@ RUN set -eux; \
 		--enable-vnc-png \
 		--enable-xen \
 		--enable-xfsctl \
-#		--enable-rbd \
+# rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
+		--enable-rbd \
 #		--enable-vde \
 	; \
 	make -j "$(nproc)"; \
