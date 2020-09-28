@@ -124,6 +124,7 @@ RUN set -eux; \
 		--enable-linux-user \
 		--enable-modules \
 		--enable-numa \
+		--enable-rbd \
 		--enable-seccomp \
 		--enable-system \
 		--enable-tools \
@@ -138,7 +139,6 @@ RUN set -eux; \
 		--enable-xen \
 		--enable-xfsctl \
 # rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
-		--enable-rbd \
 #		--enable-vde \
 	; \
 	make -j "$(nproc)"; \
@@ -149,7 +149,12 @@ RUN set -eux; \
 	\
 	apt-mark auto '.*' > /dev/null; \
 	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark > /dev/null; \
-	find /usr/local -type f -executable -exec ldd '{}' ';' \
+	find /usr/local \
+		-type f \
+		\( -executable -o -name '*.so' \) \
+# rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
+		-not -name 'block-rbd.so' \
+		-exec ldd '{}' ';' \
 		| awk '/=>/ { print $(NF-1) }' \
 		| sort -u \
 		| xargs -r dpkg-query --search \
