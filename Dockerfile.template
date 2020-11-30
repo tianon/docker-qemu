@@ -55,9 +55,14 @@ RUN set -eux; \
 		libxen-dev \
 		make \
 		pkg-config \
-		python \
+		python3 \
 		xfslibs-dev \
 		zlib1g-dev \
+{{ if ["4.2", "5.0", "5.1"] | index(env.version) then "" else ( -}}
+# https://wiki.qemu.org/ChangeLog/5.2#Build_Information
+		ninja-build \
+		python3-setuptools \
+{{ ) end -}}
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\

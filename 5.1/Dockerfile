@@ -61,7 +61,7 @@ RUN set -eux; \
 		libxen-dev \
 		make \
 		pkg-config \
-		python \
+		python3 \
 		xfslibs-dev \
 		zlib1g-dev \
 	; \
