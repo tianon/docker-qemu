@@ -11,8 +11,8 @@
     "url": "https://download.qemu.org/qemu-5.1.0.tar.xz",
     "version": "5.1.0"
   },
-  "5.2-rc": {
-    "url": "https://download.qemu.org/qemu-5.2.0-rc3.tar.xz",
-    "version": "5.2.0-rc3"
+  "5.2": {
+    "url": "https://download.qemu.org/qemu-5.2.0.tar.xz",
+    "version": "5.2.0"
   }
 }
