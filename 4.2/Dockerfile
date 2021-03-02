@@ -94,15 +94,15 @@ RUN set -eux; \
 	./configure \
 		--target-list=' \
 # system targets
-# (https://sources.debian.org/src/qemu/stretch/debian/rules/#L57-L61, slimmed)
+# (https://sources.debian.org/src/qemu/buster/debian/rules/#L59-L63, slimmed)
 			i386-softmmu x86_64-softmmu aarch64-softmmu arm-softmmu m68k-softmmu \
-			mips64-softmmu mips64el-softmmu ppc64-softmmu \
+			mips64-softmmu mips64el-softmmu ppc64-softmmu riscv64-softmmu \
 			sparc64-softmmu s390x-softmmu \
 # user targets
-# (https://sources.debian.org/src/qemu/stretch/debian/rules/#L81-L86, slimmed)
+# (https://sources.debian.org/src/qemu/buster/debian/rules/#L83-L88, slimmed)
 			i386-linux-user x86_64-linux-user aarch64-linux-user arm-linux-user m68k-linux-user \
 			mips64-linux-user mips64el-linux-user \
-			ppc64-linux-user ppc64le-linux-user sparc64-linux-user \
+			ppc64-linux-user ppc64le-linux-user riscv64-linux-user sparc64-linux-user \
 			s390x-linux-user \
 		' \
 		--disable-docs \
