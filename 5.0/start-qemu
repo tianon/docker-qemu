@@ -50,7 +50,7 @@ if [ -n "${QEMU_HDA:-}" ]; then
 	# http://wiki.qemu.org/download/qemu-doc.html#Invocation
 	qemuScsiDevice='virtio-scsi-pci'
 	case "$qemuArch" in
-		arm) qemuScsiDevice='virtio-scsi-device' ;;
+		arm | riscv64) qemuScsiDevice='virtio-scsi-device' ;;
 	esac
 
 	#qemuArgs+=( -hda "$QEMU_HDA" )
