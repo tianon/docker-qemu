@@ -82,7 +82,7 @@ done
 
 qemuNetDevice='virtio-net-pci'
 case "$qemuArch" in
-	arm) qemuNetDevice='virtio-net-device' ;;
+	arm | riscv64) qemuNetDevice='virtio-net-device' ;;
 esac
 
 qemuArgs+=(
