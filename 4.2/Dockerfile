@@ -6,9 +6,18 @@
 
 FROM debian:buster-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN set -eux; \
+	suite="$(awk '$1 == "deb" { print $3; exit }' /etc/apt/sources.list)"; \
+	echo "deb http://deb.debian.org/debian $suite-backports main" > /etc/apt/sources.list.d/backports.list; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		-t "$suite-backports" \
 		ovmf \
-	&& rm -rf /var/lib/apt/lists/*
+		qemu-efi-aarch64 \
+		qemu-efi-arm \
+# TODO in bullseye+, add u-boot-qemu ?  https://packages.debian.org/bullseye/u-boot-qemu
+	; \
+	rm -rf /var/lib/apt/lists/*
 
 COPY *.patch /qemu-patches/
 
@@ -105,6 +114,9 @@ RUN set -eux; \
 			ppc64-linux-user ppc64le-linux-user riscv64-linux-user sparc64-linux-user \
 			s390x-linux-user \
 		' \
+# let's point "firmware path" to Debian's value so we get access to "OVMF.fd" and friends more easily
+		--firmwarepath=/usr/share/qemu:/usr/share/seabios:/usr/lib/ipxe/qemu \
+# https://salsa.debian.org/qemu-team/qemu/-/blob/058ab4ec8623766b50055c8c56d0d5448d52fb0a/debian/rules#L38
 		--disable-docs \
 		--disable-gtk --disable-vte \
 		--disable-sdl \
