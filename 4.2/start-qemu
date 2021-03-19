@@ -25,7 +25,8 @@ if [ -z "${QEMU_NO_SSH:-}" ]; then
 fi
 qemuPorts+=( ${QEMU_PORTS:-} )
 
-if [ -e /dev/kvm ]; then
+if [ -e /dev/kvm ] && sh -c 'echo -n > /dev/kvm' &> /dev/null; then
+	# https://github.com/tianon/docker-qemu/issues/4
 	qemuArgs+=( -enable-kvm )
 elif [ "$hostArch" = "$qemuArch" ]; then
 	echo >&2
