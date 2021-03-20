@@ -104,6 +104,8 @@ RUN set -eux; \
 	\
 	./configure --help; \
 	./configure \
+# let's add a link to our source code in the output of "--version" in case our users end up filing bugs against the QEMU project O:)
+		--with-pkgversion='https://github.com/tianon/docker-qemu' \
 		--target-list=' \
 # system targets
 # (https://sources.debian.org/src/qemu/buster/debian/rules/#L59-L63, slimmed)
