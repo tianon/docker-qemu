@@ -7,15 +7,24 @@
 FROM debian:buster-slim
 
 RUN set -eux; \
+# add backports for (potentially) newer QEMU firmware packages
 	suite="$(awk '$1 == "deb" { print $3; exit }' /etc/apt/sources.list)"; \
 	echo "deb http://deb.debian.org/debian $suite-backports main" > /etc/apt/sources.list.d/backports.list; \
+# and add APT pinning to ensure we don't accidentally get QEMU from Debian
+	{ \
+		echo 'Package: qemu-efi-* ovmf'; \
+		echo 'Pin: release a=*-backports'; \
+		echo 'Pin-Priority: 600'; \
+		echo; \
+		echo 'Package: qemu*'; \
+		echo 'Pin: version *'; \
+		echo 'Pin-Priority: -10'; \
+	} > /etc/apt/preferences.d/qemu.pref; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
-		-t "$suite-backports" \
 		ovmf \
 		qemu-efi-aarch64 \
 		qemu-efi-arm \
-# TODO in bullseye+, add u-boot-qemu ?  https://packages.debian.org/bullseye/u-boot-qemu
 	; \
 	rm -rf /var/lib/apt/lists/*
 

@@ -1,16 +1,58 @@
 FROM debian:buster-slim
 
 RUN set -eux; \
+# add backports for (potentially) newer QEMU firmware packages
 	suite="$(awk '$1 == "deb" { print $3; exit }' /etc/apt/sources.list)"; \
 	echo "deb http://deb.debian.org/debian $suite-backports main" > /etc/apt/sources.list.d/backports.list; \
+# and add APT pinning to ensure we don't accidentally get QEMU from Debian
+	{ \
+		echo 'Package: qemu-efi-* ovmf'; \
+		echo 'Pin: release a=*-backports'; \
+		echo 'Pin-Priority: 600'; \
+		echo; \
+		echo 'Package: qemu*'; \
+		echo 'Pin: version *'; \
+		echo 'Pin-Priority: -10'; \
+	} > /etc/apt/preferences.d/qemu.pref; \
 	apt-get update; \
+{{ def firmware_packages: {
+	amd64: "ovmf",
+	arm64: "qemu-efi-aarch64",
+	"armel | armhf": "qemu-efi-arm",
+# TODO add "i386": "ovmf-ia32" in bullseye+
+# TODO in bullseye+, add u-boot-qemu ?  https://packages.debian.org/bullseye/u-boot-qemu (not sure which arches to add this to since it contains all of them...  maybe every relevant one?)
+} -}}
+{{ if env.variant == "native" then ( -}}
+	arch="$(dpkg --print-architecture)"; \
+	case "$arch" in \
+{{
+	[
+		firmware_packages
+		| to_entries[]
+		| (
+-}}
+		{{ .key }}) apt-get install -y --no-install-recommends {{ .value }} ;; \
+{{
+		)
+	] | add
+-}}
+		*) echo >&2 "warning: architecture '$arch' unknown 😅 (is there a 'QEMU firmware' package that should be installed here? likely candidates: https://packages.debian.org/source/$suite/edk2)" ;; \
+	esac; \
+{{ ) else ( -}}
 	apt-get install -y --no-install-recommends \
-		-t "$suite-backports" \
-		ovmf \
-		qemu-efi-aarch64 \
-		qemu-efi-arm \
-# TODO in bullseye+, add u-boot-qemu ?  https://packages.debian.org/bullseye/u-boot-qemu
+{{
+	[
+		[ firmware_packages[] ]
+		| sort[]
+		| (
+-}}
+		{{ . }} \
+{{
+		)
+	] | add
+-}}
 	; \
+{{ ) end -}}
 	rm -rf /var/lib/apt/lists/*
 
 COPY *.patch /qemu-patches/
@@ -97,11 +139,28 @@ RUN set -eux; \
 		patch --strip 1 --input "$p"; \
 	done; \
 	rm -rf /qemu-patches; \
+{{ if env.variant == "native" then ( -}}
+	\
+	arch="$(dpkg --print-architecture)"; \
+	case "$arch" in \
+		amd64) targetList='x86_64-softmmu' ;; \
+		arm64) targetList='aarch64-softmmu' ;; \
+		armel | armhf) targetList='arm-softmmu' ;; \
+		i386) targetList='i386-softmmu' ;; \
+		mips64el) targetList='mips64el-softmmu' ;; \
+		ppc64el) targetList='ppc64-softmmu' ;; \
+		s390x) targetList='s390x-softmmu' ;; \
+		*) echo >&2 "error: architecture '$arch' unimplemented 😅"; exit 1 ;; \
+	esac; \
+{{ ) else "" end -}}
 	\
 	./configure --help; \
 	./configure \
 # let's add a link to our source code in the output of "--version" in case our users end up filing bugs against the QEMU project O:)
 		--with-pkgversion='https://github.com/tianon/docker-qemu' \
+{{ if env.variant == "native" then ( -}}
+		--target-list="$targetList" \
+{{ ) else ( -}}
 		--target-list=' \
 # system targets
 # (https://sources.debian.org/src/qemu/buster/debian/rules/#L59-L63, slimmed)
@@ -115,6 +174,7 @@ RUN set -eux; \
 			ppc64-linux-user ppc64le-linux-user riscv64-linux-user sparc64-linux-user \
 			s390x-linux-user \
 		' \
+{{ ) end -}}
 # let's point "firmware path" to Debian's value so we get access to "OVMF.fd" and friends more easily
 		--firmwarepath=/usr/share/qemu:/usr/share/seabios:/usr/lib/ipxe/qemu \
 # https://salsa.debian.org/qemu-team/qemu/-/blob/058ab4ec8623766b50055c8c56d0d5448d52fb0a/debian/rules#L38

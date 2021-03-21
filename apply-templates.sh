@@ -27,14 +27,15 @@ generated_warning() {
 }
 
 for version; do
-	export version
-
-	echo "processing $version ..."
-
-	{
-		generated_warning
-		gawk -f "$jqt" Dockerfile.template
-	} > "$version/Dockerfile"
-
 	cp -a start-qemu "$version/"
+	for variant in '' native; do
+		export version variant
+
+		echo "processing $version${variant:+ ($variant)} ..."
+
+		{
+			generated_warning
+			gawk -f "$jqt" Dockerfile.template
+		} > "$version/Dockerfile${variant:+.$variant}"
+	done
 done
