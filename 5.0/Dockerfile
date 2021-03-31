@@ -7,15 +7,24 @@
 FROM debian:buster-slim
 
 RUN set -eux; \
+# add backports for (potentially) newer QEMU firmware packages
 	suite="$(awk '$1 == "deb" { print $3; exit }' /etc/apt/sources.list)"; \
 	echo "deb http://deb.debian.org/debian $suite-backports main" > /etc/apt/sources.list.d/backports.list; \
+# and add APT pinning to ensure we don't accidentally get QEMU from Debian
+	{ \
+		echo 'Package: qemu-efi-* ovmf'; \
+		echo 'Pin: release a=*-backports'; \
+		echo 'Pin-Priority: 600'; \
+		echo; \
+		echo 'Package: qemu*'; \
+		echo 'Pin: version *'; \
+		echo 'Pin-Priority: -10'; \
+	} > /etc/apt/preferences.d/qemu.pref; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
-		-t "$suite-backports" \
 		ovmf \
 		qemu-efi-aarch64 \
 		qemu-efi-arm \
-# TODO in bullseye+, add u-boot-qemu ?  https://packages.debian.org/bullseye/u-boot-qemu
 	; \
 	rm -rf /var/lib/apt/lists/*
 
@@ -109,12 +118,6 @@ RUN set -eux; \
 			i386-softmmu x86_64-softmmu aarch64-softmmu arm-softmmu m68k-softmmu \
 			mips64-softmmu mips64el-softmmu ppc64-softmmu riscv64-softmmu \
 			sparc64-softmmu s390x-softmmu \
-# user targets
-# (https://sources.debian.org/src/qemu/buster/debian/rules/#L83-L88, slimmed)
-			i386-linux-user x86_64-linux-user aarch64-linux-user arm-linux-user m68k-linux-user \
-			mips64-linux-user mips64el-linux-user \
-			ppc64-linux-user ppc64le-linux-user riscv64-linux-user sparc64-linux-user \
-			s390x-linux-user \
 		' \
 # let's point "firmware path" to Debian's value so we get access to "OVMF.fd" and friends more easily
 		--firmwarepath=/usr/share/qemu:/usr/share/seabios:/usr/lib/ipxe/qemu \
@@ -135,12 +138,10 @@ RUN set -eux; \
 		--enable-libssh \
 		--enable-libusb \
 		--enable-linux-aio \
-		--enable-linux-user \
 		--enable-modules \
 		--enable-numa \
 		--enable-rbd \
 		--enable-seccomp \
-		--enable-system \
 		--enable-tools \
 		--enable-usb-redir \
 		--enable-vhost-net \

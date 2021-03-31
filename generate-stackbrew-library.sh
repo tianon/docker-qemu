@@ -29,8 +29,8 @@ dirCommit() {
 	(
 		cd "$dir"
 		fileCommit \
-			Dockerfile \
-			$(git show HEAD:./Dockerfile | awk '
+			Dockerfile* \
+			$(git show HEAD:./Dockerfile* | awk '
 				toupper($1) == "COPY" {
 					for (i = 2; i < NF; i++) {
 						print $i
@@ -39,6 +39,21 @@ dirCommit() {
 			')
 	)
 }
+
+getArches() {
+	local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/'
+
+	eval "declare -g -A parentRepoToArches=( $(
+		find -name 'Dockerfile*' -exec awk '
+				toupper($1) == "FROM" && $2 !~ /^(scratch|.*\/.*)(:|$)/ {
+					print "'"$officialImagesUrl"'" $2
+				}
+			' '{}' + \
+			| sort -u \
+			| xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
+	) )"
+}
+getArches
 
 cat <<-EOH
 # this file is generated via https://github.com/tianon/docker-qemu/blob/$(fileCommit "$self")/$self
@@ -71,10 +86,25 @@ for version; do
 
 	commit="$(dirCommit "$version")"
 
-	echo
-	cat <<-EOE
-		Tags: $(join ', ' "${versionAliases[@]}")
-		GitCommit: $commit
-		Directory: $version
-	EOE
+	for variant in '' native; do
+		variantAliases=( "${versionAliases[@]}" )
+		if [ -n "$variant" ]; then
+			variantAliases=( "${variantAliases[@]/%/-$variant}" )
+			variantAliases=( "${variantAliases[@]//latest-/}" )
+		fi
+
+		variantParent="$(awk 'toupper($1) == "FROM" { print $2 }' "$version/Dockerfile${variant:+.$variant}")"
+		variantArches="${parentRepoToArches[$variantParent]}"
+
+		echo
+		cat <<-EOE
+			Tags: $(join ', ' "${variantAliases[@]}")
+			Architectures: $(join ', ' $variantArches)
+			GitCommit: $commit
+			Directory: $version
+		EOE
+		if [ -n "$variant" ]; then
+			echo "File: Dockerfile.$variant"
+		fi
+	done
 done

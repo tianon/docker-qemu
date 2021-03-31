@@ -14,7 +14,7 @@ $ docker run -it --rm \
 	-e QEMU_CDROM=/tmp/debian.iso \
 	-e QEMU_BOOT='order=d' \
 	-e QEMU_PORTS='2375 2376' \
-	tianon/qemu
+	tianon/qemu:native
 ```
 
 Note: port 22 will always be mapped (regardless of the contents of `QEMU_PORTS`).
@@ -24,3 +24,5 @@ For supplying additional arguments, use a command of `start-qemu <args>`. For ex
 For UEFI support, [the `ovmf` package](https://packages.debian.org/sid/ovmf) is installed, which can be utilized most easily by supplying `--bios /usr/share/ovmf/OVMF.fd`.
 
 By default, this image will use [QEMU's user-mode networking stack](https://wiki.qemu.org/Documentation/Networking#User_Networking_.28SLIRP.29), which means if you want ping/ICMP working, you'll likely need to also include something like `--sysctl net.ipv4.ping_group_range='0 2147483647'` in your container runtime settings.
+
+The `native` variants for `amd64` only contain `qemu-system-x86_64` -- the non-`native` variants contain QEMU compiled for a variety of target CPUs.
