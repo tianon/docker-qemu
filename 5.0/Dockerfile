@@ -91,7 +91,7 @@ RUN set -eux; \
 	\
 	export GNUPGHOME="$(mktemp -d)"; \
 	for key in $QEMU_KEYS; do \
-		gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+		gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
 	done; \
 	gpg --batch --verify "$tarball.sig" "$tarball"; \
 	gpgconf --kill all; \
