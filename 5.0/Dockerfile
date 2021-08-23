@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 RUN set -eux; \
 # add backports for (potentially) newer QEMU firmware packages
@@ -12,17 +12,18 @@ RUN set -eux; \
 	echo "deb http://deb.debian.org/debian $suite-backports main" > /etc/apt/sources.list.d/backports.list; \
 # and add APT pinning to ensure we don't accidentally get QEMU from Debian
 	{ \
-		echo 'Package: qemu-efi-* ovmf'; \
+		echo 'Package: src:edk2'; \
 		echo 'Pin: release a=*-backports'; \
 		echo 'Pin-Priority: 600'; \
 		echo; \
-		echo 'Package: qemu*'; \
+		echo 'Package: src:qemu'; \
 		echo 'Pin: version *'; \
 		echo 'Pin-Priority: -10'; \
 	} > /etc/apt/preferences.d/qemu.pref; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		ovmf \
+		ovmf-ia32 \
 		qemu-efi-aarch64 \
 		qemu-efi-arm \
 	; \
