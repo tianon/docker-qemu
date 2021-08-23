@@ -109,10 +109,14 @@ RUN set -eux; \
 		python3 \
 		xfslibs-dev \
 		zlib1g-dev \
-{{ if ["4.2", "5.0", "5.1"] | index(env.version) then "" else ( -}}
+{{ if ["5.0", "5.1"] | index(env.version) then "" else ( -}}
 # https://wiki.qemu.org/ChangeLog/5.2#Build_Information
 		ninja-build \
 		python3-setuptools \
+{{ ) end -}}
+{{ if ["5.0", "5.1", "5.2"] | index(env.version) then "" else ( -}}
+# https://www.qemu.org/2021/08/22/fuse-blkexport/
+		libfuse3-dev \
 {{ ) end -}}
 	; \
 	rm -rf /var/lib/apt/lists/*; \
@@ -205,6 +209,10 @@ RUN set -eux; \
 		--enable-xfsctl \
 # rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
 #		--enable-vde \
+{{ if ["5.0", "5.1", "5.2"] | index(env.version) then "" else ( -}}
+# https://www.qemu.org/2021/08/22/fuse-blkexport/
+		--enable-fuse \
+{{ ) end -}}
 	; \
 	make -j "$(nproc)"; \
 	make install; \

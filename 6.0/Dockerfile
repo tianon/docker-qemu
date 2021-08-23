@@ -85,6 +85,8 @@ RUN set -eux; \
 # https://wiki.qemu.org/ChangeLog/5.2#Build_Information
 		ninja-build \
 		python3-setuptools \
+# https://www.qemu.org/2021/08/22/fuse-blkexport/
+		libfuse3-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -158,6 +160,8 @@ RUN set -eux; \
 		--enable-xfsctl \
 # rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
 #		--enable-vde \
+# https://www.qemu.org/2021/08/22/fuse-blkexport/
+		--enable-fuse \
 	; \
 	make -j "$(nproc)"; \
 	make install; \
