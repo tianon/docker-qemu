@@ -21,14 +21,12 @@ RUN set -eux; \
 		echo 'Pin-Priority: -10'; \
 	} > /etc/apt/preferences.d/qemu.pref; \
 	apt-get update; \
-	arch="$(dpkg --print-architecture)"; \
-	case "$arch" in \
-		amd64) apt-get install -y --no-install-recommends ovmf ;; \
-		arm64) apt-get install -y --no-install-recommends qemu-efi-aarch64 ;; \
-		armel | armhf) apt-get install -y --no-install-recommends qemu-efi-arm ;; \
-		i386) apt-get install -y --no-install-recommends ovmf-ia32 ;; \
-		*) echo >&2 "warning: architecture '$arch' unknown 😅 (is there a 'QEMU firmware' package that should be installed here? likely candidates: https://packages.debian.org/source/$suite/edk2)" ;; \
-	esac; \
+	apt-get install -y --no-install-recommends \
+		ovmf \
+		ovmf-ia32 \
+		qemu-efi-aarch64 \
+		qemu-efi-arm \
+	; \
 	rm -rf /var/lib/apt/lists/*
 
 COPY *.patch /qemu-patches/
@@ -41,8 +39,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 5.0.1
-ENV QEMU_URL https://download.qemu.org/qemu-5.0.1.tar.xz
+ENV QEMU_VERSION 6.1.0
+ENV QEMU_URL https://download.qemu.org/qemu-6.1.0.tar.xz
 
 RUN set -eux; \
 	\
@@ -85,6 +83,11 @@ RUN set -eux; \
 		python3 \
 		xfslibs-dev \
 		zlib1g-dev \
+# https://wiki.qemu.org/ChangeLog/5.2#Build_Information
+		ninja-build \
+		python3-setuptools \
+# https://www.qemu.org/2021/08/22/fuse-blkexport/
+		libfuse3-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -111,23 +114,17 @@ RUN set -eux; \
 	done; \
 	rm -rf /qemu-patches; \
 	\
-	arch="$(dpkg --print-architecture)"; \
-	case "$arch" in \
-		amd64) targetList='x86_64-softmmu' ;; \
-		arm64) targetList='aarch64-softmmu' ;; \
-		armel | armhf) targetList='arm-softmmu' ;; \
-		i386) targetList='i386-softmmu' ;; \
-		mips64el) targetList='mips64el-softmmu' ;; \
-		ppc64el) targetList='ppc64-softmmu' ;; \
-		s390x) targetList='s390x-softmmu' ;; \
-		*) echo >&2 "error: architecture '$arch' unimplemented 😅"; exit 1 ;; \
-	esac; \
-	\
 	./configure --help; \
 	./configure \
 # let's add a link to our source code in the output of "--version" in case our users end up filing bugs against the QEMU project O:)
 		--with-pkgversion='https://github.com/tianon/docker-qemu' \
-		--target-list="$targetList" \
+		--target-list=' \
+# system targets
+# (https://sources.debian.org/src/qemu/buster/debian/rules/#L59-L63, slimmed)
+			i386-softmmu x86_64-softmmu aarch64-softmmu arm-softmmu m68k-softmmu \
+			mips64-softmmu mips64el-softmmu ppc64-softmmu riscv64-softmmu \
+			sparc64-softmmu s390x-softmmu \
+		' \
 # let's point "firmware path" to Debian's value so we get access to "OVMF.fd" and friends more easily
 		--firmwarepath=/usr/share/qemu:/usr/share/seabios:/usr/lib/ipxe/qemu \
 # https://salsa.debian.org/qemu-team/qemu/-/blob/058ab4ec8623766b50055c8c56d0d5448d52fb0a/debian/rules#L38
@@ -164,6 +161,8 @@ RUN set -eux; \
 		--enable-xfsctl \
 # rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
 #		--enable-vde \
+# https://www.qemu.org/2021/08/22/fuse-blkexport/
+		--enable-fuse \
 	; \
 	make -j "$(nproc)"; \
 	make install; \
