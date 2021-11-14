@@ -104,7 +104,7 @@ if [ -z "${QEMU_NO_VNC:-}" ]; then
 	)
 fi
 
-if [ -z "${QEMU_MACHINE:-}" ]; then
+if [ -n "${QEMU_MACHINE:-}" ]; then
 	qemuArgs+=(
 		-machine "${QEMU_MACHINE}"
 	)
