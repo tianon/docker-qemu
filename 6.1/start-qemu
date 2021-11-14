@@ -13,7 +13,7 @@ set -e
 #   QEMU_NO_SSH=1 (suppress automatic port 22 forwarding)
 #   QEMU_NO_SERIAL=1 (suppress automatic "-serial stdio")
 #   QEMU_NO_VNC=1 (suppress automatic "-vnc ':0'")
-#   QENU_MACHINE  (For example if arch=arm, "smdkc210" - Samsung SMDKC210 board (Exynos4210))
+#   QENU_MACHINE  (for non-native)
 
 hostArch="$(uname -m)"
 qemuArch="${QEMU_ARCH:-$hostArch}"
@@ -106,7 +106,7 @@ fi
 
 if [ -z "${QEMU_MACHINE:-}" ]; then
 	qemuArgs+=(
-		--machine "${QEMU_MACHINE}"
+		-machine "${QEMU_MACHINE}"
 	)
 fi
 
