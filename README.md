@@ -30,7 +30,7 @@ The `native` variants for `amd64` only contain `qemu-system-x86_64` -- the non-`
 ## For non-native
 
 ```console
-$ touch /hdimages/hda.qcow2
+$ touch /hdimages/armhfp.qcow2
 $ docker run -it --rm \
     --device /dev/kvm \
     --name qemu-container-arm \
@@ -52,3 +52,5 @@ $ docker run -it --rm \
     -e QEMU_INITRD=/tmp/initrd.gz \
     <your alias>/qemu:6.1
 ```
+
+If ARM or MIPS is selected, kernel image and initrd image are required, so use it like this.
