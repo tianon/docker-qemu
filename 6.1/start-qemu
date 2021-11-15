@@ -13,7 +13,10 @@ set -e
 #   QEMU_NO_SSH=1 (suppress automatic port 22 forwarding)
 #   QEMU_NO_SERIAL=1 (suppress automatic "-serial stdio")
 #   QEMU_NO_VNC=1 (suppress automatic "-vnc ':0'")
-#   QENU_MACHINE  (for non-native)
+#   QEMU_MACHINE  (for non-native)
+#   QEMU_BIOS     (filename)
+#   QEMU_KERNEL   (filename)
+#   QEMU_INITRD   (filename)
 
 hostArch="$(uname -m)"
 qemuArch="${QEMU_ARCH:-$hostArch}"
@@ -107,6 +110,24 @@ fi
 if [ -n "${QEMU_MACHINE:-}" ]; then
 	qemuArgs+=(
 		-machine "${QEMU_MACHINE}"
+	)
+fi
+
+if [ -n "${QEMU_BIOS}" ]; then
+	qemuArgs+=(
+		-bios "${QEMU_BIOS}"
+	)
+fi
+
+if [ -n "${QEMU_KERNEL}" ]; then
+	qemuArgs+=(
+		-kernel "${QEMU_KERNEL}"
+	)
+fi
+
+if [ -n "${QEMU_INITRD}" ]; then
+	qemuArgs+=(
+		-initrd "${QEMU_INITRD}"
 	)
 fi
 
