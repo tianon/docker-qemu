@@ -30,12 +30,12 @@ The `native` variants for `amd64` only contain `qemu-system-x86_64` -- the non-`
 ## For non-native
 
 ```console
-$ touch /hdimages/armhfp.qcow2
+$ touch /hdimages/armhf.qcow2
 $ docker run -it --rm \
     --device /dev/kvm \
     --name qemu-container-arm \
     --user="$(id --user):$(id --group)" \
-    -v /hdimages/armhfp.qcow2:/tmp/hda.qcow2 \
+    -v /hdimages/armhf.qcow2:/tmp/hda.qcow2 \
     -v /bootimages/initrd-debian11-armhf.gz:/tmp/initrd.gz \
     -v /bootimages/vmlinuz-debian11-armhf:/tmp/vmlinuz \
     -e QEMU_HDA=/tmp/hda.qcow2 \
