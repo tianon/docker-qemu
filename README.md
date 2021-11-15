@@ -26,3 +26,29 @@ For UEFI support, [the `ovmf` package](https://packages.debian.org/sid/ovmf) is 
 By default, this image will use [QEMU's user-mode networking stack](https://wiki.qemu.org/Documentation/Networking#User_Networking_.28SLIRP.29), which means if you want ping/ICMP working, you'll likely need to also include something like `--sysctl net.ipv4.ping_group_range='0 2147483647'` in your container runtime settings.
 
 The `native` variants for `amd64` only contain `qemu-system-x86_64` -- the non-`native` variants contain QEMU compiled for a variety of target CPUs.
+
+## For non-native
+
+```console
+$ touch /hdimages/hda.qcow2
+$ docker run -it --rm \
+    --device /dev/kvm \
+    --name qemu-container-arm \
+    --user="$(id --user):$(id --group)" \
+    -v /hdimages/armhfp.qcow2:/tmp/hda.qcow2 \
+    -v /bootimages/initrd-debian11-armhf.gz:/tmp/initrd.gz \
+    -v /bootimages/vmlinuz-debian11-armhf:/tmp/vmlinuz \
+    -e QEMU_HDA=/tmp/hda.qcow2 \
+    -e QEMU_HDA_SIZE=20G \
+    -e QEMU_CPU=1 \
+    -e QEMU_RAM=1024 \
+    -v /cdimages/debian-11.1.0-armhf-netinst.iso:/tmp/debian.iso:ro \
+    -e QEMU_CDROM=/tmp/debian.iso \
+    -e QEMU_BOOT='order=d' \
+    -e QEMU_PORTS='2375 2376' \
+    -e QEMU_ARCH='arm' \
+    -e QEMU_MACHINE='virt' \
+    -e QEMU_KERNEL=/tmp/vmlinuz \
+    -e QEMU_INITRD=/tmp/initrd.gz \
+    <your alias>/qemu:6.1
+```
