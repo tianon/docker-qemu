@@ -57,4 +57,8 @@ If ARM or MIPS is selected, kernel image and initrd image are required, so use i
 
 ### Manually root activation
 
-When using the ARM platform, it was confirmed that the settings were not reflected in `/etc/passwd` and `/etc/shadow`.
+When using the ARM platform, it was confirmed that the settings were not reflected in `/etc/passwd` and `/etc/shadow`. Please refer to the two links below and set them up manually.
+
+  * [Manually generate password for /etc/shadow](https://unix.stackexchange.com/questions/81240/manually-generate-password-for-etc-shadow)
+  * [How to mount qcow2 disk image on Linux](https://www.xmodulo.com/mount-qcow2-disk-image-linux.html)
+
