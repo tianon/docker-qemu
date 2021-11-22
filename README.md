@@ -53,7 +53,7 @@ $ docker run -it --rm \
     <your alias>/qemu:6.1
 ```
 
-If ARM or MIPS is selected, kernel image and initrd image are required, so use it like [here (non-EFI)](https://gist.github.com/KunoiSayami/934c7690dcf357f42537562dbdf90b56) or [here (EFI)](https://gist.github.com/ag88/163a7c389af0c6dcef5a32a3394e8bac)
+If ARM or MIPS is selected, kernel image and initrd image are required, so use it like [here (ARM/non-EFI)](https://gist.github.com/KunoiSayami/934c7690dcf357f42537562dbdf90b56)  or [here (MIPS/non-EFI)](https://gist.github.com/bradfa/46ceff759a0cf9f392cc069c4f0f095a) or [here (ARM/EFI)](https://gist.github.com/ag88/163a7c389af0c6dcef5a32a3394e8bac)
 
 ### Manually root activation
 
