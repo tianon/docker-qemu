@@ -41,8 +41,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 5.2.0
-ENV QEMU_URL https://download.qemu.org/qemu-5.2.0.tar.xz
+ENV QEMU_VERSION 6.2.0
+ENV QEMU_URL https://download.qemu.org/qemu-6.2.0.tar.xz
 
 RUN set -eux; \
 	\
@@ -88,6 +88,8 @@ RUN set -eux; \
 # https://wiki.qemu.org/ChangeLog/5.2#Build_Information
 		ninja-build \
 		python3-setuptools \
+# https://www.qemu.org/2021/08/22/fuse-blkexport/
+		libfuse3-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -167,6 +169,8 @@ RUN set -eux; \
 		--enable-xfsctl \
 # rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
 #		--enable-vde \
+# https://www.qemu.org/2021/08/22/fuse-blkexport/
+		--enable-fuse \
 	; \
 	make -j "$(nproc)"; \
 	make install; \
