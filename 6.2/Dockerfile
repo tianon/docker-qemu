@@ -21,6 +21,8 @@ RUN set -eux; \
 		echo 'Pin-Priority: -10'; \
 	} > /etc/apt/preferences.d/qemu.pref; \
 	apt-get update; \
+# https://github.com/tianon/docker-qemu/issues/30
+	apt-get install -y --no-install-recommends ca-certificates; \
 	apt-get install -y --no-install-recommends \
 		ovmf \
 		ovmf-ia32 \
@@ -48,7 +50,6 @@ RUN set -eux; \
 	\
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
-		ca-certificates \
 		gnupg dirmngr \
 		wget \
 		xz-utils \
