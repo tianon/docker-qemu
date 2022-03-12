@@ -10,6 +10,7 @@ set -e
 #   QEMU_BOOT     (-boot)
 #   QEMU_PORTS="xxx[ xxx ...]" (space separated port numbers)
 #   QEMU_NET_USER_EXTRA="net=192.168.76.0/24,dhcpstart=192.168.76.9" (extra raw args for "-net user,...")
+#   QEMU_NO_NET=1 (suppress ALL -netdev - thus no port forwards, etc)
 #   QEMU_NO_SSH=1 (suppress automatic port 22 forwarding)
 #   QEMU_NO_SERIAL=1 (suppress automatic "-serial stdio")
 #   QEMU_NO_VNC=1 (suppress automatic "-vnc ':0'")
@@ -71,25 +72,27 @@ if [ -n "${QEMU_BOOT:-}" ]; then
 	qemuArgs+=( -boot "$QEMU_BOOT" )
 fi
 
-netArg='user'
-netArg+=",hostname=$(hostname)"
-if [ -n "${QEMU_NET_USER_EXTRA:-}" ]; then
-	netArg+=",$QEMU_NET_USER_EXTRA"
+if [ -z "${QEMU_NO_NET:-}" ]; then
+	netArg='user'
+	netArg+=",hostname=$(hostname)"
+	if [ -n "${QEMU_NET_USER_EXTRA:-}" ]; then
+		netArg+=",$QEMU_NET_USER_EXTRA"
+	fi
+	for port in "${qemuPorts[@]}"; do
+		netArg+=",hostfwd=tcp::$port-:$port"
+		netArg+=",hostfwd=udp::$port-:$port"
+	done
+
+	qemuNetDevice='virtio-net-pci'
+	case "$qemuArch" in
+		arm | riscv64) qemuNetDevice='virtio-net-device' ;;
+	esac
+
+	qemuArgs+=(
+		-netdev "$netArg,id=net"
+		-device "$qemuNetDevice,netdev=net"
+	)
 fi
-for port in "${qemuPorts[@]}"; do
-	netArg+=",hostfwd=tcp::$port-:$port"
-	netArg+=",hostfwd=udp::$port-:$port"
-done
-
-qemuNetDevice='virtio-net-pci'
-case "$qemuArch" in
-	arm | riscv64) qemuNetDevice='virtio-net-device' ;;
-esac
-
-qemuArgs+=(
-	-netdev "$netArg,id=net"
-	-device "$qemuNetDevice,netdev=net"
-)
 
 if [ -z "${QEMU_NO_SERIAL:-}" ]; then
 	qemuArgs+=(
