@@ -26,15 +26,19 @@ dirCommit() {
 	local dir="$1"; shift
 	(
 		cd "$dir"
-		fileCommit \
-			Dockerfile* \
-			$(git show HEAD:./Dockerfile* | awk '
+		files="$(
+			git show HEAD:./Dockerfile HEAD:./Dockerfile.native | awk '
 				toupper($1) == "COPY" {
 					for (i = 2; i < NF; i++) {
+						if ($i ~ /^--from=/) {
+							next
+						}
 						print $i
 					}
 				}
-			')
+			'
+		)"
+		fileCommit Dockerfile Dockerfile.native $files
 	)
 }
 
