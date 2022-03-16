@@ -1,0 +1,20 @@
+Origin: https://bugs.launchpad.net/qemu/+bug/1217339/comments/2
+Origin: https://lists.nongnu.org/archive/html/qemu-devel/2017-03/msg03039.html
+
+diff --git a/softmmu/runstate.c b/softmmu/runstate.c
+index ce8977c6a2..392e4c88be 100644
+--- a/softmmu/runstate.c
++++ b/softmmu/runstate.c
+@@ -613,7 +613,11 @@ void qemu_system_killed(int signal, pid_t pid)
+     /* Cannot call qemu_system_shutdown_request directly because
+      * we are in a signal handler.
+      */
+-    shutdown_requested = SHUTDOWN_CAUSE_HOST_SIGNAL;
++    if (signal == SIGHUP) {
++        powerdown_requested = 1;
++    } else {
++        shutdown_requested = SHUTDOWN_CAUSE_HOST_SIGNAL;
++    }
+     qemu_notify_event();
+ }
+ 

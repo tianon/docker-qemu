@@ -84,7 +84,6 @@ RUN set -eux; \
 		make \
 		pkg-config \
 		python3 \
-		xfslibs-dev \
 		zlib1g-dev \
 # https://wiki.qemu.org/ChangeLog/5.2#Build_Information
 		ninja-build \
@@ -167,7 +166,6 @@ RUN set -eux; \
 		--enable-vnc-jpeg \
 		--enable-vnc-png \
 		--enable-xen \
-		--enable-xfsctl \
 # rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
 #		--enable-vde \
 # https://www.qemu.org/2021/08/22/fuse-blkexport/
