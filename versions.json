@@ -8,7 +8,7 @@
     "version": "6.2.0"
   },
   "7.0-rc": {
-    "url": "https://download.qemu.org/qemu-7.0.0-rc0.tar.xz",
-    "version": "7.0.0-rc0"
+    "url": "https://download.qemu.org/qemu-7.0.0-rc1.tar.xz",
+    "version": "7.0.0-rc1"
   }
 }
