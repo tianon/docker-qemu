@@ -41,8 +41,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 6.1.1
-ENV QEMU_URL https://download.qemu.org/qemu-6.1.1.tar.xz
+ENV QEMU_VERSION 7.1.0-rc1
+ENV QEMU_URL https://download.qemu.org/qemu-7.1.0-rc1.tar.xz
 
 RUN set -eux; \
 	\
@@ -152,11 +152,9 @@ RUN set -eux; \
 		--enable-usb-redir \
 		--enable-vhost-net \
 		--enable-vhost-user \
-		--enable-vhost-vsock \
 		--enable-virtfs \
 		--enable-vnc \
 		--enable-vnc-jpeg \
-		--enable-vnc-png \
 		--enable-xen \
 # rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
 #		--enable-vde \
