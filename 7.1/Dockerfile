@@ -152,6 +152,7 @@ RUN set -eux; \
 		--enable-usb-redir \
 		--enable-vhost-net \
 		--enable-vhost-user \
+		--enable-vhost-vdpa \
 		--enable-virtfs \
 		--enable-vnc \
 		--enable-vnc-jpeg \

@@ -196,6 +196,11 @@ RUN set -eux; \
 		--enable-usb-redir \
 		--enable-vhost-net \
 		--enable-vhost-user \
+{{ if [ "6.2", "7.0" ] | index(env.version) then ( -}}
+		--enable-vhost-vsock \
+{{ ) else ( -}}
+		--enable-vhost-vdpa \
+{{ ) end -}}
 		--enable-virtfs \
 		--enable-vnc \
 		--enable-vnc-jpeg \
