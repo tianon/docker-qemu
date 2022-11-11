@@ -1,0 +1,55 @@
+Origin: https://lists.nongnu.org/archive/html/qemu-devel/2022-11/msg01633.html
+Author: Miroslav Rezanina <mrezanin@redhat.com>
+
+Commit cfead31326 'acpi: pc: vga: use AcpiDevAmlIf interface to build VGA 
+device descriptors' added
+a new file - acpi-vga.c. This file (indirectly) includes pixman.h file so we 
+need to ensure pixman
+is available when file is compiled.
+
+Signed-off-by: Miroslav Rezanina <mrezanin@redhat.com>
+---
+ hw/display/meson.build | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/hw/display/meson.build b/hw/display/meson.build
+index 7a725ed80e..c8e84e9707 100644
+--- a/hw/display/meson.build
++++ b/hw/display/meson.build
+@@ -43,7 +43,7 @@ if (config_all_devices.has_key('CONFIG_VGA_CIRRUS') or
+     config_all_devices.has_key('CONFIG_VMWARE_VGA') or
+     config_all_devices.has_key('CONFIG_ATI_VGA')
+    )
+-  softmmu_ss.add(when: 'CONFIG_ACPI', if_true: files('acpi-vga.c'),
++  softmmu_ss.add(when: 'CONFIG_ACPI', if_true: [files('acpi-vga.c'), pixman],
+                                       if_false: files('acpi-vga-stub.c'))
+ endif
+ 
+@@ -51,7 +51,7 @@ if config_all_devices.has_key('CONFIG_QXL')
+   qxl_ss = ss.source_set()
+   qxl_ss.add(when: 'CONFIG_QXL', if_true: [files('qxl.c', 'qxl-logger.c', 'qxl-render.c'),
+                                            pixman, spice])
+-  qxl_ss.add(when: 'CONFIG_ACPI', if_true: files('acpi-vga.c'),
++  qxl_ss.add(when: 'CONFIG_ACPI', if_true: [files('acpi-vga.c'), pixman],
+                                   if_false: files('acpi-vga-stub.c'))
+   hw_display_modules += {'qxl': qxl_ss}
+ endif
+@@ -99,14 +99,14 @@ if config_all_devices.has_key('CONFIG_VIRTIO_VGA')
+                     if_true: [files('virtio-vga.c'), pixman])
+   virtio_vga_ss.add(when: 'CONFIG_VHOST_USER_VGA',
+                     if_true: files('vhost-user-vga.c'))
+-  virtio_vga_ss.add(when: 'CONFIG_ACPI', if_true: files('acpi-vga.c'),
++  virtio_vga_ss.add(when: 'CONFIG_ACPI', if_true: [files('acpi-vga.c'), pixman],
+                                          if_false: files('acpi-vga-stub.c'))
+   hw_display_modules += {'virtio-vga': virtio_vga_ss}
+ 
+   virtio_vga_gl_ss = ss.source_set()
+   virtio_vga_gl_ss.add(when: ['CONFIG_VIRTIO_VGA', virgl, opengl],
+                        if_true: [files('virtio-vga-gl.c'), pixman])
+-  virtio_vga_gl_ss.add(when: 'CONFIG_ACPI', if_true: files('acpi-vga.c'),
++  virtio_vga_gl_ss.add(when: 'CONFIG_ACPI', if_true: [files('acpi-vga.c'), pixman],
+                                             if_false: files('acpi-vga-stub.c'))
+   hw_display_modules += {'virtio-vga-gl': virtio_vga_gl_ss}
+ endif
+-- 
+2.31.1
