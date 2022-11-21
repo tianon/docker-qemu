@@ -114,6 +114,7 @@ RUN set -eux; \
 		python3-setuptools \
 # https://www.qemu.org/2021/08/22/fuse-blkexport/
 		libfuse3-dev \
+		genisoimage \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -231,10 +232,15 @@ RUN set -eux; \
 		| sort -u \
 		| xargs -r apt-mark manual \
 	; \
+# add cloud-init support 
+        apt-mark manual genisoimage; \
+        wget -O /usr/bin/cloud-localds https://raw.githubusercontent.com/canonical/cloud-utils/main/bin/cloud-localds; \
+	chmod +x /usr/bin/cloud-localds; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
 # basic smoke test
-	qemu-img --version
+	qemu-img --version; 
+
 
 STOPSIGNAL SIGHUP
 
