@@ -88,6 +88,8 @@ RUN set -eux; \
 		python3-setuptools \
 # https://www.qemu.org/2021/08/22/fuse-blkexport/
 		libfuse3-dev \
+# https://wiki.qemu.org/ChangeLog/7.2#Removal_of_the_.22slirp.22_submodule_.28affects_.22-netdev_user.22.29
+		libslirp-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -161,6 +163,8 @@ RUN set -eux; \
 #		--enable-vde \
 # https://www.qemu.org/2021/08/22/fuse-blkexport/
 		--enable-fuse \
+# https://wiki.qemu.org/ChangeLog/7.2#Removal_of_the_.22slirp.22_submodule_.28affects_.22-netdev_user.22.29
+		--enable-slirp \
 	; \
 	make -j "$(nproc)"; \
 	make install; \
