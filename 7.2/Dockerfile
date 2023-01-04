@@ -150,6 +150,7 @@ RUN set -eux; \
 		--enable-numa \
 		--enable-rbd \
 		--enable-seccomp \
+		--enable-strip \
 		--enable-tools \
 		--enable-usb-redir \
 		--enable-vhost-net \
