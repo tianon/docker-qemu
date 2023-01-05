@@ -12,6 +12,8 @@ else
 fi
 versions=( "${versions[@]%/}" )
 
+# TODO https://gitlab.com/qemu-project/qemu-web/-/blob/master/_data/releases.yml ?
+
 # https://download.qemu.org/?C=M;O=D
 urls="$(
 	wget -qO- 'https://www.qemu.org/download/' \
