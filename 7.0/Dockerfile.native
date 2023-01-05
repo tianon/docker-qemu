@@ -4,6 +4,10 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
+FROM debian:bullseye-slim as cloudutilssrc
+RUN apt update && apt install -y cloud-utils
+
+
 FROM debian:bullseye-slim
 
 RUN set -eux; \
@@ -194,12 +198,11 @@ RUN set -eux; \
 	; \
 # add cloud-init support 
         apt-mark manual genisoimage; \
-        wget -O /usr/bin/cloud-localds https://raw.githubusercontent.com/canonical/cloud-utils/main/bin/cloud-localds; \
-	chmod +x /usr/bin/cloud-localds; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
 # basic smoke test
 	qemu-img --version; 
+COPY --from=cloudutilssrc /usr/bin/cloud-localds /usr/bin/cloud-localds 
 
 
 STOPSIGNAL SIGHUP
