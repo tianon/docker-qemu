@@ -245,12 +245,13 @@ RUN set -eux; \
 		| sort -u \
 		| xargs -r apt-mark manual \
 	; \
-# add cloud-init support 
+# add genisoimage for cloud-init support, from cloudutilssrc
         apt-mark manual genisoimage; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
 # basic smoke test
-	qemu-img --version; 
+	qemu-img --version;
+#copy cloud-init support, form cloudutilssrc, to use it together with genisoimage
 COPY --from=cloudutilssrc /usr/bin/cloud-localds /usr/bin/cloud-localds 
 
 
