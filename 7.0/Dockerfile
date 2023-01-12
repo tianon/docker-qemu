@@ -4,6 +4,10 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
+FROM debian:bullseye-slim as cloudutilssrc
+RUN apt update && apt install -y cloud-utils
+
+
 FROM debian:bullseye-slim
 
 RUN set -eux; \
@@ -88,6 +92,7 @@ RUN set -eux; \
 		python3-setuptools \
 # https://www.qemu.org/2021/08/22/fuse-blkexport/
 		libfuse3-dev \
+		genisoimage \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -184,10 +189,15 @@ RUN set -eux; \
 		| sort -u \
 		| xargs -r apt-mark manual \
 	; \
+# add genisoimage for cloud-init support, from cloudutilssrc
+        apt-mark manual genisoimage; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
 # basic smoke test
-	qemu-img --version
+	qemu-img --version;
+#copy cloud-init support, form cloudutilssrc, to use it together with genisoimage
+COPY --from=cloudutilssrc /usr/bin/cloud-localds /usr/bin/cloud-localds 
+
 
 STOPSIGNAL SIGHUP
 
