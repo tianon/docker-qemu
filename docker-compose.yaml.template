@@ -1,0 +1,25 @@
+version: "3"
+services:
+
+  qemu: 
+    image: tianon/qemu:native
+    container_name: qemu
+    cap_add:
+      - sys_nice
+    volumes: 
+      - /home/username/config/qemu/hda.img:/tmp/hda.img
+      - /home/username/data/qemu/bootimage.iso:/tmp/bootimage.iso:ro
+    ports: 
+      - "22:22"
+      - "5900:5900"
+    devices:
+      - /dev/kvm:/dev/kvm
+    environment:
+      - QEMU_HDA=/tmp/hda.img,format=raw
+      - QEMU_HDA_SIZE=50G
+      - QEMU_CPU=4
+      - QEMU_RAM=8192
+      - QEMU_CDROM=/tmp/bootimage.iso
+      - QEMU_BOOT=d
+      - QEMU_PORTS=2375 2376
+    restart: always
