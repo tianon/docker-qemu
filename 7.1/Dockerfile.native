@@ -4,12 +4,13 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 RUN set -eux; \
 # add backports for (potentially) newer QEMU firmware packages
-	suite="$(awk '$1 == "deb" { print $3; exit }' /etc/apt/sources.list)"; \
-	echo "deb http://deb.debian.org/debian $suite-backports main" > /etc/apt/sources.list.d/backports.list; \
+	! grep backports /etc/apt/sources.list.d/debian.sources; \
+	sed -ri -e 's/([[:space:]])([^[:space:]]+)-updates($|[[:space:]])/\0\1\2-backports\3/' /etc/apt/sources.list.d/debian.sources; \
+	grep backports /etc/apt/sources.list.d/debian.sources; \
 # and add APT pinning to ensure we don't accidentally get QEMU from Debian
 	{ \
 		echo 'Package: src:edk2'; \
@@ -185,7 +186,7 @@ RUN set -eux; \
 # rbd support is enabled, but "librbd1" is not included since it adds ~60MB and is version-sensitive (https://github.com/tianon/docker-qemu/pull/11#issuecomment-689816553)
 		-not -name 'block-rbd.so' \
 		-exec ldd '{}' ';' \
-		| awk '/=>/ { print $(NF-1) }' \
+		| awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); print so }' \
 		| sort -u \
 		| xargs -r dpkg-query --search \
 		| cut -d: -f1 \
