@@ -8,7 +8,7 @@ FROM debian:bookworm-slim
 
 RUN set -eux; \
 # add backports for (potentially) newer QEMU firmware packages
-	! grep backports /etc/apt/sources.list.d/debian.sources; \
+	if grep backports /etc/apt/sources.list.d/debian.sources; then exit 1; fi; \
 	sed -ri -e 's/([[:space:]])([^[:space:]]+)-updates($|[[:space:]])/\0\1\2-backports\3/' /etc/apt/sources.list.d/debian.sources; \
 	grep backports /etc/apt/sources.list.d/debian.sources; \
 # and add APT pinning to ensure we don't accidentally get QEMU from Debian
