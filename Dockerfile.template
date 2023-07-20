@@ -115,10 +115,8 @@ RUN set -eux; \
 		python3-setuptools \
 # https://www.qemu.org/2021/08/22/fuse-blkexport/
 		libfuse3-dev \
-{{ if [ "7.0", "7.1" ] | index(env.version) then "" else ( -}}
 # https://wiki.qemu.org/ChangeLog/7.2#Removal_of_the_.22slirp.22_submodule_.28affects_.22-netdev_user.22.29
 		libslirp-dev \
-{{ ) end -}}
 {{ if [ "7.2", "8.0" ] | index(env.version) then "" else ( -}}
 # https://wiki.qemu.org/ChangeLog/8.1#Build_Dependencies
 		python3-venv \
@@ -206,11 +204,7 @@ RUN set -eux; \
 		--enable-usb-redir \
 		--enable-vhost-net \
 		--enable-vhost-user \
-{{ if [ "7.0" ] | index(env.version) then ( -}}
-		--enable-vhost-vsock \
-{{ ) else ( -}}
 		--enable-vhost-vdpa \
-{{ ) end -}}
 		--enable-virtfs \
 		--enable-vnc \
 		--enable-vnc-jpeg \
@@ -219,10 +213,8 @@ RUN set -eux; \
 #		--enable-vde \
 # https://www.qemu.org/2021/08/22/fuse-blkexport/
 		--enable-fuse \
-{{ if [ "7.0", "7.1" ] | index(env.version) then "" else ( -}}
 # https://wiki.qemu.org/ChangeLog/7.2#Removal_of_the_.22slirp.22_submodule_.28affects_.22-netdev_user.22.29
 		--enable-slirp \
-{{ ) end -}}
 	; \
 	make -j "$(nproc)"; \
 	make install; \
