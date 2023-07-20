@@ -120,6 +120,8 @@ RUN set -eux; \
 {{ if [ "7.2", "8.0" ] | index(env.version) then "" else ( -}}
 # https://wiki.qemu.org/ChangeLog/8.1#Build_Dependencies
 		python3-venv \
+# "../meson.build:3070:18: ERROR: Git program not found, cannot download dtc.wrap via git."
+		git \
 {{ ) end -}}
 	; \
 	rm -rf /var/lib/apt/lists/*; \

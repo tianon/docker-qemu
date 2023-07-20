@@ -95,6 +95,8 @@ RUN set -eux; \
 		libslirp-dev \
 # https://wiki.qemu.org/ChangeLog/8.1#Build_Dependencies
 		python3-venv \
+# "../meson.build:3070:18: ERROR: Git program not found, cannot download dtc.wrap via git."
+		git \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
