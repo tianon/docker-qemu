@@ -97,13 +97,17 @@ for version; do
 		fi
 
 		variantParent="$(awk 'toupper($1) == "FROM" { print $2 }' "$version/Dockerfile${variant:+.$variant}")"
-		variantArches="${parentRepoToArches[$variantParent]}"
 
 		suite="${variantParent#*:}" # "buster-slim", "buster"
 		suite="${suite%-slim}" # "buster"
 		suiteAliases=( "${variantAliases[@]/%/-$suite}" )
 		suiteAliases=( "${suiteAliases[@]//latest-/}" )
 		variantAliases+=( "${suiteAliases[@]}" )
+
+		case "$variant" in
+			'') variantArches='amd64' ;; # only make the "fat" variant on amd64
+			*) variantArches="${parentRepoToArches[$variantParent]}" ;;
+		esac
 
 		echo
 		cat <<-EOE
