@@ -109,6 +109,9 @@ for version; do
 			*) variantArches="${parentRepoToArches[$variantParent]}" ;;
 		esac
 
+		# skip i386 (missing many packages, like libxen-dev; not something I actually care to target)
+		variantArches="$(sed -e 's/ i386 / /g' <<<" $variantArches ")"
+
 		echo
 		cat <<-EOE
 			Tags: $(join ', ' "${variantAliases[@]}")
