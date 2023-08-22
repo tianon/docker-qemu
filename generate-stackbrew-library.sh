@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 declare -A aliases=(
-	[8.0]='8 latest'
+	[8.1]='8 latest'
 	[7.2]='7'
 )
 
