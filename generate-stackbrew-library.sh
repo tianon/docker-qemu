@@ -112,6 +112,12 @@ for version; do
 		# skip i386 (missing many packages, like libxen-dev; not something I actually care to target)
 		variantArches="$(sed -e 's/ i386 / /g' <<<" $variantArches ")"
 
+		# architectures I don't think make sense to or I don't care to support
+		variantArches="$(sed -e 's/ arm32v5 / /g' <<<" $variantArches ")"
+		variantArches="$(sed -e 's/ mips64le / /g' <<<" $variantArches ")"
+		variantArches="$(sed -e 's/ ppc64le / /g' <<<" $variantArches ")"
+		variantArches="$(sed -e 's/ s390x / /g' <<<" $variantArches ")"
+
 		echo
 		cat <<-EOE
 			Tags: $(join ', ' "${variantAliases[@]}")
