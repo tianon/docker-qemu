@@ -42,8 +42,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 8.1.4
-ENV QEMU_URL https://download.qemu.org/qemu-8.1.4.tar.xz
+ENV QEMU_VERSION 8.1.5
+ENV QEMU_URL https://download.qemu.org/qemu-8.1.5.tar.xz
 
 RUN set -eux; \
 	\
