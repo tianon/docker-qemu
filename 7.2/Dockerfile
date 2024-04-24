@@ -1,3 +1,9 @@
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
+
 FROM debian:bookworm-slim
 
 RUN set -eux; \
@@ -18,44 +24,12 @@ RUN set -eux; \
 	apt-get update; \
 # https://github.com/tianon/docker-qemu/issues/30
 	apt-get install -y --no-install-recommends ca-certificates; \
-{{ def firmware_packages: {
-	amd64: "ovmf",
-	arm64: "qemu-efi-aarch64",
-	"armel | armhf": "qemu-efi-arm",
-	i386: "ovmf-ia32",
-# TODO add u-boot-qemu ?  https://packages.debian.org/bullseye/u-boot-qemu (not sure which arches to add this to since it contains all of them...  maybe every relevant one?)
-} -}}
-{{ if env.variant == "native" then ( -}}
-	arch="$(dpkg --print-architecture)"; \
-	case "$arch" in \
-{{
-	[
-		firmware_packages
-		| to_entries[]
-		| (
--}}
-		{{ .key }}) apt-get install -y --no-install-recommends {{ .value }} ;; \
-{{
-		)
-	] | add
--}}
-		*) echo >&2 "warning: architecture '$arch' unknown 😅 (is there a 'QEMU firmware' package that should be installed here? likely candidates: https://packages.debian.org/source/$suite/edk2)" ;; \
-	esac; \
-{{ ) else ( -}}
 	apt-get install -y --no-install-recommends \
-{{
-	[
-		[ firmware_packages[] ]
-		| sort[]
-		| (
--}}
-		{{ . }} \
-{{
-		)
-	] | add
--}}
+		ovmf \
+		ovmf-ia32 \
+		qemu-efi-aarch64 \
+		qemu-efi-arm \
 	; \
-{{ ) end -}}
 	rm -rf /var/lib/apt/lists/*
 
 COPY *.patch /qemu-patches/
@@ -68,8 +42,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION {{ .version }}
-ENV QEMU_URL {{ .url }}
+ENV QEMU_VERSION 7.2.11
+ENV QEMU_URL https://download.qemu.org/qemu-7.2.11.tar.xz
 
 RUN set -eux; \
 	\
@@ -117,12 +91,6 @@ RUN set -eux; \
 		libfuse3-dev \
 # https://wiki.qemu.org/ChangeLog/7.2#Removal_of_the_.22slirp.22_submodule_.28affects_.22-netdev_user.22.29
 		libslirp-dev \
-{{ if [ "7.2", "8.0" ] | index(env.version) then "" else ( -}}
-# https://wiki.qemu.org/ChangeLog/8.1#Build_Dependencies
-		python3-venv \
-# "../meson.build:3070:18: ERROR: Git program not found, cannot download dtc.wrap via git."
-		git \
-{{ ) end -}}
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -148,28 +116,11 @@ RUN set -eux; \
 		patch --strip 1 --input "$p"; \
 	done; \
 	rm -rf /qemu-patches; \
-{{ if env.variant == "native" then ( -}}
-	\
-	arch="$(dpkg --print-architecture)"; \
-	case "$arch" in \
-		amd64) targetList='x86_64-softmmu' ;; \
-		arm64) targetList='aarch64-softmmu' ;; \
-		armel | armhf) targetList='arm-softmmu' ;; \
-		i386) targetList='i386-softmmu' ;; \
-		mips64el) targetList='mips64el-softmmu' ;; \
-		ppc64el) targetList='ppc64-softmmu' ;; \
-		s390x) targetList='s390x-softmmu' ;; \
-		*) echo >&2 "error: architecture '$arch' unimplemented 😅"; exit 1 ;; \
-	esac; \
-{{ ) else "" end -}}
 	\
 	./configure --help; \
 	./configure \
 # let's add a link to our source code in the output of "--version" in case our users end up filing bugs against the QEMU project O:)
 		--with-pkgversion='https://github.com/tianon/docker-qemu' \
-{{ if env.variant == "native" then ( -}}
-		--target-list="$targetList" \
-{{ ) else ( -}}
 		--target-list=' \
 # system targets
 # (https://sources.debian.org/src/qemu/buster/debian/rules/#L59-L63, slimmed)
@@ -177,7 +128,6 @@ RUN set -eux; \
 			mips64-softmmu mips64el-softmmu ppc64-softmmu riscv64-softmmu \
 			sparc64-softmmu s390x-softmmu \
 		' \
-{{ ) end -}}
 # let's point "firmware path" to Debian's value so we get access to "OVMF.fd" and friends more easily
 		--firmwarepath=/usr/share/qemu:/usr/share/seabios:/usr/lib/ipxe/qemu \
 # https://salsa.debian.org/qemu-team/qemu/-/blob/058ab4ec8623766b50055c8c56d0d5448d52fb0a/debian/rules#L38
