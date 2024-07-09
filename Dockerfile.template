@@ -23,7 +23,8 @@ RUN set -eux; \
 	arm64: "qemu-efi-aarch64",
 	"armel | armhf": "qemu-efi-arm",
 	i386: "ovmf-ia32",
-# TODO add u-boot-qemu ?  https://packages.debian.org/bullseye/u-boot-qemu (not sure which arches to add this to since it contains all of them...  maybe every relevant one?)
+	riscv64: "opensbi u-boot-qemu",
+# TODO add u-boot-qemu to more arches?  https://packages.debian.org/bookworm/u-boot-qemu
 } -}}
 {{ if env.variant == "native" then ( -}}
 	arch="$(dpkg --print-architecture)"; \
@@ -45,11 +46,12 @@ RUN set -eux; \
 	apt-get install -y --no-install-recommends \
 {{
 	[
-		[ firmware_packages[] ]
-		| sort[]
+		firmware_packages
+		| to_entries[]
 		| (
 -}}
-		{{ . }} \
+# {{ .key }}
+		{{ .value }} \
 {{
 		)
 	] | add

@@ -25,10 +25,16 @@ RUN set -eux; \
 # https://github.com/tianon/docker-qemu/issues/30
 	apt-get install -y --no-install-recommends ca-certificates; \
 	apt-get install -y --no-install-recommends \
+# amd64
 		ovmf \
-		ovmf-ia32 \
+# arm64
 		qemu-efi-aarch64 \
+# armel | armhf
 		qemu-efi-arm \
+# i386
+		ovmf-ia32 \
+# riscv64
+		opensbi u-boot-qemu \
 	; \
 	rm -rf /var/lib/apt/lists/*
 

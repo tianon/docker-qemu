@@ -30,6 +30,7 @@ RUN set -eux; \
 		arm64) apt-get install -y --no-install-recommends qemu-efi-aarch64 ;; \
 		armel | armhf) apt-get install -y --no-install-recommends qemu-efi-arm ;; \
 		i386) apt-get install -y --no-install-recommends ovmf-ia32 ;; \
+		riscv64) apt-get install -y --no-install-recommends opensbi u-boot-qemu ;; \
 		*) echo >&2 "warning: architecture '$arch' unknown 😅 (is there a 'QEMU firmware' package that should be installed here? likely candidates: https://packages.debian.org/source/$suite/edk2)" ;; \
 	esac; \
 	rm -rf /var/lib/apt/lists/*
