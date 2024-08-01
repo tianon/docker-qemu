@@ -1,8 +1,4 @@
 {
-  "7.2": {
-    "url": "https://download.qemu.org/qemu-7.2.13.tar.xz",
-    "version": "7.2.13"
-  },
   "8.0": {
     "url": "https://download.qemu.org/qemu-8.0.5.tar.xz",
     "version": "8.0.5"
@@ -18,5 +14,9 @@
   "9.0": {
     "url": "https://download.qemu.org/qemu-9.0.2.tar.xz",
     "version": "9.0.2"
+  },
+  "9.1-rc": {
+    "url": "https://download.qemu.org/qemu-9.1.0-rc0.tar.xz",
+    "version": "9.1.0-rc0"
   }
 }
