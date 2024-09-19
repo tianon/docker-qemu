@@ -8,8 +8,8 @@
     "version": "8.1.5"
   },
   "8.2": {
-    "url": "https://download.qemu.org/qemu-8.2.6.tar.xz",
-    "version": "8.2.6"
+    "url": "https://download.qemu.org/qemu-8.2.7.tar.xz",
+    "version": "8.2.7"
   },
   "9.0": {
     "url": "https://download.qemu.org/qemu-9.0.2.tar.xz",
