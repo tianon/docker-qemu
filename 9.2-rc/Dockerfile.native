@@ -45,8 +45,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 7.2.14
-ENV QEMU_URL https://download.qemu.org/qemu-7.2.14.tar.xz
+ENV QEMU_VERSION 9.2.0-rc0
+ENV QEMU_URL https://download.qemu.org/qemu-9.2.0-rc0.tar.xz
 
 RUN set -eux; \
 	\
@@ -94,6 +94,10 @@ RUN set -eux; \
 		libfuse3-dev \
 # https://wiki.qemu.org/ChangeLog/7.2#Removal_of_the_.22slirp.22_submodule_.28affects_.22-netdev_user.22.29
 		libslirp-dev \
+# https://wiki.qemu.org/ChangeLog/8.1#Build_Dependencies
+		python3-venv \
+# "../meson.build:3070:18: ERROR: Git program not found, cannot download dtc.wrap via git."
+		git \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
