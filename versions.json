@@ -20,7 +20,7 @@
     "version": "9.1.1"
   },
   "9.2-rc": {
-    "url": "https://download.qemu.org/qemu-9.2.0-rc0.tar.xz",
-    "version": "9.2.0-rc0"
+    "url": "https://download.qemu.org/qemu-9.2.0-rc1.tar.xz",
+    "version": "9.2.0-rc1"
   }
 }
