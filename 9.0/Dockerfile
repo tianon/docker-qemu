@@ -24,6 +24,9 @@ RUN set -eux; \
 	apt-get update; \
 # https://github.com/tianon/docker-qemu/issues/30
 	apt-get install -y --no-install-recommends ca-certificates; \
+# include "swtpm" for TPM emulation -- not automatically launched, but small and useful for running a TPM sidecar container (https://qemu-project.gitlab.io/qemu/specs/tpm.html#the-qemu-tpm-emulator-device)
+	apt-get install -y --no-install-recommends swtpm; \
+# install "firmware" packages (easier UEFI, etc)
 	apt-get install -y --no-install-recommends \
 # amd64
 		ovmf \

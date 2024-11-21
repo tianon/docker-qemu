@@ -26,6 +26,9 @@ RUN set -eux; \
 	riscv64: "opensbi u-boot-qemu",
 # TODO add u-boot-qemu to more arches?  https://packages.debian.org/bookworm/u-boot-qemu
 } -}}
+# include "swtpm" for TPM emulation -- not automatically launched, but small and useful for running a TPM sidecar container (https://qemu-project.gitlab.io/qemu/specs/tpm.html#the-qemu-tpm-emulator-device)
+	apt-get install -y --no-install-recommends swtpm; \
+# install "firmware" packages (easier UEFI, etc)
 {{ if env.variant == "native" then ( -}}
 	arch="$(dpkg --print-architecture)"; \
 	case "$arch" in \
