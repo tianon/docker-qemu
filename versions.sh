@@ -12,6 +12,7 @@ else
 fi
 versions=( "${versions[@]%/}" )
 
+# https://gitlab.com/qemu-project/qemu-web/-/commit/4d3bcc3891af7ec73f7c5a1887d7a9f5a5a4b406
 # TODO https://gitlab.com/qemu-project/qemu-web/-/blob/master/_data/releases.yml ?
 
 # https://download.qemu.org/?C=M;O=D
