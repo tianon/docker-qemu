@@ -1,26 +1,22 @@
 {
   "10.0-rc": {
-    "url": "https://download.qemu.org/qemu-10.0.0-rc0.tar.xz",
-    "version": "10.0.0-rc0"
+    "url": "https://download.qemu.org/qemu-10.0.0-rc1.tar.xz",
+    "version": "10.0.0-rc1"
   },
   "7.2": {
-    "url": "https://download.qemu.org/qemu-7.2.16.tar.xz",
-    "version": "7.2.16"
+    "url": "https://download.qemu.org/qemu-7.2.17.tar.xz",
+    "version": "7.2.17"
   },
   "8.2": {
-    "url": "https://download.qemu.org/qemu-8.2.9.tar.xz",
-    "version": "8.2.9"
-  },
-  "9.0": {
-    "url": "https://download.qemu.org/qemu-9.0.4.tar.xz",
-    "version": "9.0.4"
+    "url": "https://download.qemu.org/qemu-8.2.10.tar.xz",
+    "version": "8.2.10"
   },
   "9.1": {
     "url": "https://download.qemu.org/qemu-9.1.3.tar.xz",
     "version": "9.1.3"
   },
   "9.2": {
-    "url": "https://download.qemu.org/qemu-9.2.2.tar.xz",
-    "version": "9.2.2"
+    "url": "https://download.qemu.org/qemu-9.2.3.tar.xz",
+    "version": "9.2.3"
   }
 }
