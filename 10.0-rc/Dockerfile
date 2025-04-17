@@ -51,8 +51,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 10.0.0-rc3
-ENV QEMU_URL https://download.qemu.org/qemu-10.0.0-rc3.tar.xz
+ENV QEMU_VERSION 10.0.0-rc4
+ENV QEMU_URL https://download.qemu.org/qemu-10.0.0-rc4.tar.xz
 
 RUN set -eux; \
 	\
