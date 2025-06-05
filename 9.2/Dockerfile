@@ -51,8 +51,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 9.2.3
-ENV QEMU_URL https://download.qemu.org/qemu-9.2.3.tar.xz
+ENV QEMU_VERSION 9.2.4
+ENV QEMU_URL https://download.qemu.org/qemu-9.2.4.tar.xz
 
 RUN set -eux; \
 	\

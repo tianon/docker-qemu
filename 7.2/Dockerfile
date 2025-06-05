@@ -51,8 +51,8 @@ ENV QEMU_KEYS \
 
 # https://www.qemu.org/download/#source
 # https://download.qemu.org/?C=M;O=D
-ENV QEMU_VERSION 7.2.17
-ENV QEMU_URL https://download.qemu.org/qemu-7.2.17.tar.xz
+ENV QEMU_VERSION 7.2.18
+ENV QEMU_URL https://download.qemu.org/qemu-7.2.18.tar.xz
 
 RUN set -eux; \
 	\
