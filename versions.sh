@@ -14,6 +14,7 @@ versions=( "${versions[@]%/}" )
 
 # https://gitlab.com/qemu-project/qemu-web/-/commit/4d3bcc3891af7ec73f7c5a1887d7a9f5a5a4b406
 # TODO https://gitlab.com/qemu-project/qemu-web/-/blob/master/_data/releases.yml ?
+# https://gitlab.com/qemu-project/qemu-web/-/blob/master/_includes/releases.html ("limit: 5" reflects the number of currently "supported" versions from the data file)
 
 # https://download.qemu.org/?C=M;O=D
 urls="$(
