@@ -4,8 +4,8 @@
     "version": "10.0.3"
   },
   "10.1-rc": {
-    "url": "https://download.qemu.org/qemu-10.1.0-rc3.tar.xz",
-    "version": "10.1.0-rc3"
+    "url": "https://download.qemu.org/qemu-10.1.0-rc3-reupload.tar.xz",
+    "version": "10.1.0-rc3-reupload"
   },
   "7.2": {
     "url": "https://download.qemu.org/qemu-7.2.19.tar.xz",
