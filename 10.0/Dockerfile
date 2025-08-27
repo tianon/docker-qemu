@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 RUN set -eux; \
 # add backports for (potentially) newer QEMU firmware packages
@@ -39,7 +39,7 @@ RUN set -eux; \
 # riscv64
 		opensbi u-boot-qemu \
 	; \
-	rm -rf /var/lib/apt/lists/*
+	apt-get dist-clean
 
 COPY *.patch /qemu-patches/
 
@@ -58,8 +58,7 @@ RUN set -eux; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
 	\
-	apt-get update; \
-	apt-get install -y --no-install-recommends \
+	apt-get install --update -y --no-install-recommends \
 		gnupg \
 		wget \
 		xz-utils \
@@ -105,7 +104,6 @@ RUN set -eux; \
 # "../meson.build:3070:18: ERROR: Git program not found, cannot download dtc.wrap via git."
 		git \
 	; \
-	rm -rf /var/lib/apt/lists/*; \
 	\
 	tarball="$(basename "$QEMU_URL")"; \
 	wget -O "$tarball.sig" "$QEMU_URL.sig"; \
@@ -203,6 +201,7 @@ RUN set -eux; \
 		| xargs -r apt-mark manual \
 	; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	apt-get dist-clean; \
 	\
 # basic smoke test
 	qemu-img --version
