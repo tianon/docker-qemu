@@ -11,9 +11,9 @@
     "url": "https://download.qemu.org/qemu-10.2.2.tar.xz",
     "version": "10.2.2"
   },
-  "11.0-rc": {
-    "url": "https://download.qemu.org/qemu-11.0.0-rc4.tar.xz",
-    "version": "11.0.0-rc4"
+  "11.0": {
+    "url": "https://download.qemu.org/qemu-11.0.0.tar.xz",
+    "version": "11.0.0"
   },
   "7.2": {
     "url": "https://download.qemu.org/qemu-7.2.22.tar.xz",
