@@ -14,5 +14,9 @@
   "11.0": {
     "url": "https://download.qemu.org/qemu-11.0.2.tar.xz",
     "version": "11.0.2"
+  },
+  "11.1-rc": {
+    "url": "https://download.qemu.org/qemu-11.1.0-rc1.tar.xz",
+    "version": "11.1.0-rc1"
   }
 }
